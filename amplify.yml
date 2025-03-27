@@ -1,0 +1,57 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        # Create environment-specific .env file based on the branch name
+        - |
+          echo "ISSUER_URL=$ISSUER_URL" >> .env
+          echo "CALLBACK_URL=$CALLBACK_URL" >> .env
+          echo "LOGOUT_URL=$LOGOUT_URL" >> .env
+          echo "NEXT_PUBLIC_AUTH0_CLIENT_ID=$NEXT_PUBLIC_AUTH0_CLIENT_ID" >> .env
+          echo "NEXT_PUBLIC_AUTH0_REDIRECT_URI=$NEXT_PUBLIC_AUTH0_REDIRECT_URI" >> .env
+          echo "NEXT_PUBLIC_AUTH0_POST_LOGOUT_REDIRECT_URI=$NEXT_PUBLIC_AUTH0_POST_LOGOUT_REDIRECT_URI" >> .env
+          echo "NEXT_PUBLIC_AUTH0_SCOPE=$NEXT_PUBLIC_AUTH0_SCOPE" >> .env
+          echo "NEXT_PUBLIC_AUTH0_AUDIENCE=$NEXT_PUBLIC_AUTH0_AUDIENCE" >> .env
+          echo "NEXT_PUBLIC_AUTH0_USE_REFRESH_TOKEN=$NEXT_PUBLIC_AUTH0_USE_REFRESH_TOKEN" >> .env
+          echo "NEXT_PUBLIC_AUTH0_DOMAIN=$NEXT_PUBLIC_AUTH0_DOMAIN" >> .env
+          if [ "${AWS_BRANCH}" = "main" ]; then
+            echo "NEXT_PUBLIC_API_URL=https://cr38tdnd0a.execute-api.us-east-1.amazonaws.com/dev" >> .env
+
+          else
+            echo "NEXT_PUBLIC_API_URL=https://cr38tdnd0a.execute-api.us-east-1.amazonaws.com/prod" >> .env
+          fi
+        - npm run build
+  artifacts:
+    baseDirectory: build
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*
+  customHeaders:
+    - pattern: "**/*"
+      headers:
+        # Security headers
+        - key: "Strict-Transport-Security"
+          value: "max-age=31536000; includeSubDomains"
+        - key: "X-Frame-Options"
+          value: "SAMEORIGIN"
+        - key: "X-XSS-Protection"
+          value: "1; mode=block"
+        # CORS headers
+        - key: "Access-Control-Allow-Origin"
+          value: "*"
+    # Cache control for static assets
+    - pattern: "static/**/*"
+      headers:
+        - key: "Cache-Control"
+          value: "public, max-age=31536000, immutable"
+    # No cache for index.html
+    - pattern: "index.html"
+      headers:
+        - key: "Cache-Control"
+          value: "no-cache, no-store, must-revalidate"

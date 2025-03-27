@@ -1,0 +1,40 @@
+@baseApiUrl = http://localhost:3001
+//@baseApiUrl = https://cr38tdnd0a.execute-api.us-east-1.amazonaws.com/dev/
+@frontendOrigin = https://9l3hyqrprh.execute-api.us-east-1.amazonaws.com
+
+@todoId = 5bf870bc-90ab-4aa5-8c87-23afaf2cd779
+
+### List all todos
+GET {{baseApiUrl}}/todos
+Origin: {{frontendOrigin}}
+
+### Create a todo
+POST {{baseApiUrl}}/todos
+Origin: {{frontendOrigin}}
+Content-Type: application/json
+
+{
+    "title": "Test Todo9",
+    "completed": true
+}
+
+### Get a todo by id
+GET {{baseApiUrl}}/todos/{{todoId}}
+Origin: {{frontendOrigin}}
+
+### Update a todo
+PUT {{baseApiUrl}}/todos/{{todoId}}
+Origin: {{frontendOrigin}}
+Content-Type: application/json
+
+{
+    "completed": true
+}
+
+### Delete a todo
+DELETE {{baseApiUrl}}/todos/{{todoId}}
+Origin: {{frontendOrigin}}
+
+
+{
+}
