@@ -32,26 +32,3 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
-  customHeaders:
-    - pattern: "**/*"
-      headers:
-        # Security headers
-        - key: "Strict-Transport-Security"
-          value: "max-age=31536000; includeSubDomains"
-        - key: "X-Frame-Options"
-          value: "SAMEORIGIN"
-        - key: "X-XSS-Protection"
-          value: "1; mode=block"
-        # CORS headers
-        - key: "Access-Control-Allow-Origin"
-          value: "*"
-    # Cache control for static assets
-    - pattern: "static/**/*"
-      headers:
-        - key: "Cache-Control"
-          value: "public, max-age=31536000, immutable"
-    # No cache for index.html
-    - pattern: "index.html"
-      headers:
-        - key: "Cache-Control"
-          value: "no-cache, no-store, must-revalidate"
